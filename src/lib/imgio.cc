@@ -89,6 +89,20 @@ Mat32f read_img(const char* fname) {
 	return mat;
 }
 
+Matuc read_mask(const char* mask_name) {
+	if (! exists_file(mask_name))
+		error_exit(ssprintf("File \"%s\" not exists!", mask_name));
+	CImg<unsigned char> img(mask_name);
+	m_assert(img.spectrum() == 3 || img.spectrum() == 1);
+	Matuc mat(img.height(), img.width(), 1);
+	REP(i, mat.rows())
+		REP(j, mat.cols()) {
+			mat.at(i, j, 0) = img(j, i);
+		}
+	m_assert(mat.rows() > 1 && mat.cols() > 1);
+	return mat;
+}
+
 // TODO a hack for the moment
 Matuc read_img_uc(const char* fname) {
 	return cvt_f2uc(read_img(fname));

@@ -11,6 +11,7 @@ class Matrix;
 
 namespace pano {
 Mat32f read_img(const char* fname);
+Matuc read_mask(const char* mask_name);
 Matuc read_img_uc(const char* fname);
 void write_rgb(const char* fname, const Mat32f& mat);
 inline void write_rgb(const std::string s, const Mat32f& mat) { write_rgb(s.c_str(), mat); }

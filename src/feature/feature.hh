@@ -48,12 +48,15 @@ class FeatureDetector {
 
 		// return [-w/2,w/2] coordinated
 		std::vector<Descriptor> detect_feature(const Mat32f& img) const;
+        std::vector<Descriptor> detect_feature(const Mat32f& img, const Matuc &mask) const;
 		virtual std::vector<Descriptor> do_detect_feature(const Mat32f& img) const = 0;
+        virtual std::vector<Descriptor> do_detect_feature(const Mat32f& img, const Matuc &mask) const = 0;
 };
 
 class SIFTDetector : public FeatureDetector {
 	public:
 		std::vector<Descriptor> do_detect_feature(const Mat32f& img) const override;
+        std::vector<Descriptor> do_detect_feature(const Mat32f& img, const Matuc &mask) const override;
 };
 
 
@@ -63,6 +66,7 @@ class BRIEFDetector : public FeatureDetector {
 		BRIEFDetector();
 		virtual ~BRIEFDetector();
 		std::vector<Descriptor> do_detect_feature(const Mat32f& img) const override;
+        std::vector<Descriptor> do_detect_feature(const Mat32f& img, const Matuc &mask) const override;
 
 	protected:
 		std::unique_ptr<BriefPattern> pattern;

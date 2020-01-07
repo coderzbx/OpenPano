@@ -85,13 +85,14 @@ void test_match(const char* f1, const char* f2) {
 	list<Mat32f> imagelist;
 	Mat32f pic1 = read_img(f1);
 	Mat32f pic2 = read_img(f2);
+	//
 	imagelist.push_back(pic1);
 	imagelist.push_back(pic2);
 
 	unique_ptr<FeatureDetector> detector;
 	detector.reset(new SIFTDetector);
-	vector<Descriptor> feat1 = detector->detect_feature(pic1),
-										 feat2 = detector->detect_feature(pic2);
+	vector<Descriptor> feat1 = detector->detect_feature(pic1);
+    vector<Descriptor> feat2 = detector->detect_feature(pic2);
 	print_debug("Feature: %lu, %lu\n", feat1.size(), feat2.size());
 
 	Mat32f concatenated = hconcat(imagelist);
@@ -123,8 +124,8 @@ void test_inlier(const char* f1, const char* f2) {
 
 	unique_ptr<FeatureDetector> detector;
 	detector.reset(new SIFTDetector);
-	vector<Descriptor> feat1 = detector->detect_feature(pic1),
-										 feat2 = detector->detect_feature(pic2);
+	vector<Descriptor> feat1 = detector->detect_feature(pic1);
+    vector<Descriptor> feat2 = detector->detect_feature(pic2);
 	vector<Vec2D> kp1; for (auto& d : feat1) kp1.emplace_back(d.coor);
 	vector<Vec2D> kp2; for (auto& d : feat2) kp2.emplace_back(d.coor);
 	print_debug("Feature: %lu, %lu\n", feat1.size(), feat2.size());

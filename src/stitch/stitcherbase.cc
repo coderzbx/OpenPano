@@ -10,11 +10,15 @@ void StitcherBase::calc_feature() {
   GuardedTimer tm("calc_feature()");
   feats.resize(imgs.size());
   keypoints.resize(imgs.size());
+//  for (int k=0; k<imgs.size(); k++) {
+//    imgs[k].load();
+//    feats[k] = feature_det->detect_feature(*imgs[k].img, *imgs[k].mask_img);
+//  }
   // detect feature
 #pragma omp parallel for schedule(dynamic)
   REP(k, (int)imgs.size()) {
     imgs[k].load();
-    feats[k] = feature_det->detect_feature(*imgs[k].img);
+    feats[k] = feature_det->detect_feature(*imgs[k].img, *imgs[k].mask_img);
     if (config::LAZY_READ)
       imgs[k].release();
     if (feats[k].size() == 0)

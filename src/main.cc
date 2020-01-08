@@ -4,6 +4,7 @@
 
 #define _USE_MATH_DEFINES
 #include <cmath>
+#include <dirent.h>
 
 #include "feature/extrema.hh"
 #include "feature/matcher.hh"
@@ -202,6 +203,35 @@ void test_warp(int argc, char* argv[]) {
 	}
 }
 
+bool ListDir(const std::string& dir_path, std::vector<std::string>& files) {
+  DIR *dp = nullptr;
+  struct dirent *dirp;
+  dp = opendir(dir_path.c_str());
+  if (nullptr == dp) {
+    std::cerr << "can't open directory" << dir_path << std::endl;
+    return false;
+  }
+  while ((dirp = readdir(dp)) != nullptr) {
+    std::string file_name = dirp->d_name;
+    int pos = file_name.find_last_of(".");
+    if (pos == -1)
+      continue;
+    std::string ext_name = file_name.substr(pos+1, file_name.length() - pos - 1);
+    if (ext_name != "jpg" && ext_name != "jpeg") {
+      continue;
+    }
+    if (dirp->d_type == 4) {
+      // directory
+    } else if (dirp->d_type == 8) {
+      // file
+      std::string file_path = dir_path + "/" + file_name;
+      files.emplace_back(file_path);
+    }
+  }
+  std::sort(files.begin(), files.end());
+  closedir(dp);
+  return true;
+}
 
 void work(int argc, char* argv[]) {
 /*
@@ -214,7 +244,9 @@ void work(int argc, char* argv[]) {
  *  }
  */
 	vector<string> imgs;
-	REPL(i, 1, argc) imgs.emplace_back(argv[i]);
+	if (!ListDir(argv[1], imgs)) {
+      REPL(i, 1, argc) imgs.emplace_back(argv[i]);
+	}
 	Mat32f res;
 	if (CYLINDER) {
 		CylinderStitcher p(move(imgs));
@@ -332,7 +364,7 @@ void planet(const char* fname) {
 }
 
 int main(int argc, char* argv[]) {
-	if (argc <= 2)
+	if (argc <= 1)
 		error_exit("Need at least two images to stitch.\n");
 	TotalTimerGlobalGuard _g;
 	srand(time(NULL));

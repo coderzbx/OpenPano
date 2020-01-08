@@ -24,7 +24,6 @@ vector<Descriptor> FeatureDetector::detect_feature(const Mat32f& img) const {
 	for (auto& d: ret) {
 		d.coor.x = (d.coor.x - 0.5) * img.width();
 		d.coor.y = (d.coor.y - 0.5) * img.height();
-        std::cout << d.coor.x << "," << d.coor.y << std::endl;
 	}
 	return ret;
 }

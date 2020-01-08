@@ -18,7 +18,11 @@ void StitcherBase::calc_feature() {
 #pragma omp parallel for schedule(dynamic)
   REP(k, (int)imgs.size()) {
     imgs[k].load();
-    feats[k] = feature_det->detect_feature(*imgs[k].img, *imgs[k].mask_img);
+    if (imgs[k].mask_img != nullptr) {
+      feats[k] = feature_det->detect_feature(*imgs[k].img, *imgs[k].mask_img);
+    } else {
+      feats[k] = feature_det->detect_feature(*imgs[k].img);
+    }
     if (config::LAZY_READ)
       imgs[k].release();
     if (feats[k].size() == 0)
